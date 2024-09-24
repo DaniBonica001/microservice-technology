@@ -2,11 +2,10 @@ package com.microservice.technology.infrastructure.adapters.input.rest.dto.respo
 
 import lombok.Builder;
 
-import java.util.UUID;
 
 @Builder
 public record CreateTechResponse(
-        UUID id,
+        int id,
         String name,
         String description
 ) {
