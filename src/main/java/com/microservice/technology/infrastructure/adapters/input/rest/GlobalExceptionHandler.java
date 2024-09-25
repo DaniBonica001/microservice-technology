@@ -2,6 +2,7 @@ package com.microservice.technology.infrastructure.adapters.input.rest;
 
 import com.microservice.technology.domain.exception.TechnologyAlreadyExists;
 
+import com.microservice.technology.domain.exception.TechnologyNotFound;
 import com.microservice.technology.domain.model.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -20,6 +21,15 @@ public class GlobalExceptionHandler {
         return ErrorResponse.builder()
                 .code(TECHNOLOGY_ALREADY_EXISTS.getCode())
                 .message(TECHNOLOGY_ALREADY_EXISTS.getDescription())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    @ExceptionHandler(TechnologyNotFound.class)
+    public ErrorResponse handleTechnologyNotFound( ) {
+        return ErrorResponse.builder()
+                .code(TECHNOLOGY_NOT_FOUND.getCode())
+                .message(TECHNOLOGY_NOT_FOUND.getDescription())
                 .timestamp(LocalDateTime.now())
                 .build();
     }
