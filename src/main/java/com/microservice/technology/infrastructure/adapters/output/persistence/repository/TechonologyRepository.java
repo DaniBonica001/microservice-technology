@@ -16,4 +16,8 @@ public interface TechonologyRepository extends ReactiveCrudRepository<Techonolog
 
 
     Flux<TechonologyEntity> findAllBy(Pageable pageable);
+
+    Mono<Boolean> existsById(int id);
+
+    Mono<TechonologyEntity> findByName(String name);
 }
