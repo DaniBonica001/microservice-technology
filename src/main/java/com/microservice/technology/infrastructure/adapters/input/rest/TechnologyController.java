@@ -6,7 +6,9 @@ import com.microservice.technology.infrastructure.adapters.input.rest.dto.reques
 import com.microservice.technology.infrastructure.adapters.input.rest.dto.response.CreateTechResponse;
 import com.microservice.technology.infrastructure.adapters.input.rest.mapper.TechnologyRestMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -20,5 +22,11 @@ public class TechnologyController implements TechnologyAPI {
     public Mono<CreateTechResponse> createTechnology(CreateTechRequest request) {
         return servicePort.createTechnology(mapper.fromCreateTechRequestToTechonology(request))
                 .map(mapper::fromTechonologyToCreateTechResponse);
+    }
+
+    @Override
+    public Mono<Page<CreateTechResponse>> findAll(String order, int page, int size) {
+        return servicePort.findAllPaged(order, page, size)
+                .map(pageTechnology  -> pageTechnology .map(mapper::fromTechonologyToCreateTechResponse));
     }
 }

@@ -5,8 +5,12 @@ import com.microservice.technology.domain.model.Techonology;
 import com.microservice.technology.infrastructure.adapters.output.persistence.mapper.TechnologyPersistenceMapper;
 import com.microservice.technology.infrastructure.adapters.output.persistence.repository.TechonologyRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+
 
 @Component
 @RequiredArgsConstructor
@@ -24,4 +28,15 @@ public class TechnologyPersistenceAdaptar implements TechnologyPersistencePort {
     public Mono<Boolean> existsByName(String name) {
         return repository.existsByName(name);
     }
+
+    @Override
+    public Flux<Techonology> findAllPaged(Pageable pageable) {
+        return repository.findAllBy(pageable).map(mapper::fromTechnologyEntityToTechnology);
+    }
+
+    @Override
+    public Mono<Long> count() {
+        return repository.count();
+    }
+
 }
