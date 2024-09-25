@@ -4,6 +4,7 @@ import com.microservice.technology.infrastructure.adapters.input.rest.dto.reques
 import com.microservice.technology.infrastructure.adapters.input.rest.dto.response.CreateTechResponse;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import reactor.core.publisher.Mono;
 
@@ -12,8 +13,8 @@ public interface TechnologyAPI {
 
     String BASE_URL = "/technology";
 
-    @PostMapping
-    Mono<CreateTechResponse> createTechnology(@Valid CreateTechRequest request);
+    @PostMapping("/v1/api")
+    Mono<CreateTechResponse> createTechnology(@Valid @RequestBody CreateTechRequest request);
 
 
 }
