@@ -7,16 +7,19 @@ import com.microservice.technology.domain.exception.TechnologyNotFound;
 import com.microservice.technology.domain.model.Tech_Capacity;
 import com.microservice.technology.domain.model.Techonology;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TechnologyService implements TechnologyServicePort {
@@ -63,9 +66,33 @@ public class TechnologyService implements TechnologyServicePort {
 
     @Override
     public Mono<Void> createTechCapacity(int capacity_id, List<Integer> techs) {
-        List<Tech_Capacity> techCapacities = techs.stream()
-                .map(techId -> Tech_Capacity.builder().capacity_id(capacity_id).technology_id(techId).build())
-                .toList();
-        return persistencePort.createTechCapacity(techCapacities);
+        return Flux.fromIterable(techs)
+                .flatMap(techId ->
+                        existsById(techId)
+                                .flatMap(exists -> {
+                                    if (exists) {
+                                        // Si existe, crear el objeto Tech_Capacity
+                                        return Mono.just(Tech_Capacity.builder()
+                                                .capacity_id(capacity_id)
+                                                .technology_id(techId)
+                                                .build());
+                                    } else {
+                                        // Si no existe, lanzar error pero continuar
+                                        return Mono.error(new Exception("Technology with ID " + techId + " does not exist"));
+                                    }
+                                })
+                                .onErrorResume(e -> {
+                                    log.error(e.getMessage());
+                                    return Mono.empty();
+                                })
+                )
+                .collectList()  // Convertir a lista después de filtrar los válidos
+                .flatMap(validTechCapacities -> {
+                    if (validTechCapacities.isEmpty()) {
+                        return Mono.error(new Exception("No valid technologies found"));
+                    }
+                    // Guardar las asociaciones válidas
+                    return persistencePort.createTechCapacity(validTechCapacities);
+                });
     }
 }
