@@ -6,9 +6,10 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Tech_Capacity {
+public class TechCapacity {
     private int id;
-    private int capacity_id;
-    private int technology_id;
+    private int technologyId;
+    private int capacityId;
+
 
 }

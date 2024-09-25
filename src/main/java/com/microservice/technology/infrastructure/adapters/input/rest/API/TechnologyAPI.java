@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RequestMapping(TechnologyAPI.BASE_URL)
@@ -21,11 +22,8 @@ public interface TechnologyAPI {
     @GetMapping("/v1/api")
     Mono<Page<CreateTechResponse>> findAll(@RequestParam(required = false) String order, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size);
 
-    @GetMapping("/v1/api/{id}")
-    Mono<Boolean> existsById(@PathVariable int id);
-
-    @GetMapping("/v1/api/{name}")
-    Mono<CreateTechResponse> findByName(@PathVariable String name);
+    @GetMapping("/v1/api/{capacityId}")
+    Flux<CreateTechResponse> findByCapacityId(@PathVariable String capacityId);
 
     @PostMapping("/v1/api/tech_capacity")
     ResponseEntity<Mono<Void>> createTechCapacity(@Valid @RequestBody CreateTechCapacityRequest request);

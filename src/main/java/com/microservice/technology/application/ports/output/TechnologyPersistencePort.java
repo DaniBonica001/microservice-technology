@@ -1,6 +1,6 @@
 package com.microservice.technology.application.ports.output;
 
-import com.microservice.technology.domain.model.Tech_Capacity;
+import com.microservice.technology.domain.model.TechCapacity;
 import com.microservice.technology.domain.model.Techonology;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -16,6 +16,6 @@ public interface TechnologyPersistencePort {
     Flux<Techonology> findAllPaged(Pageable pageable);
     Mono<Long> count();
     Mono<Boolean> existsById(int id);
-    Mono<Techonology> findByName(String name);
-    Mono<Void> createTechCapacity(List<Tech_Capacity> techonology);
+    Flux<Techonology> findByCapacityId(String capacityId);
+    Mono<Void> createTechCapacity(List<TechCapacity> techonology);
 }
