@@ -1,11 +1,11 @@
 package com.microservice.technology.infrastructure.adapters.output.persistence;
 
 import com.microservice.technology.application.ports.output.TechnologyPersistencePort;
-import com.microservice.technology.domain.model.Tech_Capacity;
+import com.microservice.technology.domain.model.TechCapacity;
 import com.microservice.technology.domain.model.Techonology;
-import com.microservice.technology.infrastructure.adapters.output.persistence.mapper.Tech_CapacityPersistenceMapper;
+import com.microservice.technology.infrastructure.adapters.output.persistence.mapper.TechCapacityPersistenceMapper;
 import com.microservice.technology.infrastructure.adapters.output.persistence.mapper.TechnologyPersistenceMapper;
-import com.microservice.technology.infrastructure.adapters.output.persistence.repository.Tech_CapacityRepository;
+import com.microservice.technology.infrastructure.adapters.output.persistence.repository.TechCapacityRepository;
 import com.microservice.technology.infrastructure.adapters.output.persistence.repository.TechonologyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -21,13 +21,12 @@ import java.util.List;
 public class TechnologyPersistenceAdaptar implements TechnologyPersistencePort {
 
     private final TechonologyRepository repository;
-    private final Tech_CapacityRepository tech_capacityRepository;
+    private final TechCapacityRepository techCapacityRepository;
     private final TechnologyPersistenceMapper mapper;
-    private final Tech_CapacityPersistenceMapper mapperTechCapacity;
+    private final TechCapacityPersistenceMapper mapperTechCapacity;
 
     @Override
     public Mono<Techonology> createTechnology(Techonology techonology) {
-
         return repository.save(mapper.fromTechnologyToTechnologyEntity(techonology)).map(mapper::fromTechnologyEntityToTechnology);
     }
 
@@ -52,13 +51,14 @@ public class TechnologyPersistenceAdaptar implements TechnologyPersistencePort {
     }
 
     @Override
-    public Mono<Techonology> findByName(String name) {
-        return repository.findByName(name).map(mapper::fromTechnologyEntityToTechnology);
+    public Flux<Techonology> findByCapacityId(String capacityId) {
+        return techCapacityRepository.findByCapacityId(Integer.parseInt(capacityId))
+                .flatMap(entity -> repository.findById(entity.getTechnologyId()).map(mapper::fromTechnologyEntityToTechnology));
     }
 
     @Override
-    public Mono<Void> createTechCapacity(List<Tech_Capacity> technology) {
-        return tech_capacityRepository.saveAll(mapperTechCapacity.fromTech_CapacityToTech_CapacityEntity(technology)).then();
+    public Mono<Void> createTechCapacity(List<TechCapacity> technology) {
+        return techCapacityRepository.saveAll(mapperTechCapacity.fromTechCapacityToTechCapacityEntity(technology)).then();
     }
 
 }

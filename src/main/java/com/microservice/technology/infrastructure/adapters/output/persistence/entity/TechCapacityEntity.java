@@ -12,9 +12,9 @@ import org.springframework.data.relational.core.mapping.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table("technology_capacity")
-public class Tech_CapacityEntity {
+public class TechCapacityEntity {
     @Id
     private int id;
-    private int technology_id;
-    private int capacity_id;
+    private int technologyId;
+    private int capacityId;
 }

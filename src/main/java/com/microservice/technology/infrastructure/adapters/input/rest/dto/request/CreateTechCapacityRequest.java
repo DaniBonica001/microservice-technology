@@ -7,7 +7,7 @@ import java.util.List;
 @Builder
 public record CreateTechCapacityRequest(
 
-        int capacity_id,
+        int capacityId,
         List<Integer> technologies
 ) {
 }
